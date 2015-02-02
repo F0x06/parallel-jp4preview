@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Imports
+import sys
+import os
+
+# Program entry point function
+# pylint: disable=W0603
+def main(argv):
+
+    # Compute JSON file path
+    __Segment_Folder__ = argv[ 0 ]
+    __NoDebayer__ = (int( argv[ 1 ] ) == 1)
+
+    # Compute source folder
+    PreviewsFolder = "%s/preview/%s" % (__Segment_Folder__, ('no-debayer' if __NoDebayer__ else 'debayer'))
+
+    # Create preview movie if not exists
+    if not os.path.isfile("%s/segment.webm" % PreviewsFolder):
+        os.system('mencoder mf://%s/*/*.jpeg -mf w=1944:h=972:fps=25:type=jpeg -ovc lavc -of lavf -lavfopts format=webm -lavcopts vcodec=libvpx:mbd=2:trell -ffourcc VP80 -oac copy -o %s/segment.webm > /dev/null 2>&1' % (PreviewsFolder, PreviewsFolder))
+
+# Program entry point
+if __name__ == "__main__":
+    main(sys.argv[1:])
