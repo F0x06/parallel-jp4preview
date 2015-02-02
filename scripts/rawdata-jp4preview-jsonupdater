@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Imports
+import json
+import sys
+
+# Function to update JSON file flags
+def updateJSON(JSONFile, __NoDebayer__):
+
+    # Open file
+    SourceJSON = open(JSONFile, 'r')
+
+    # Load JSON file
+    json_data = json.load(SourceJSON)
+
+    # Close JSON file
+    SourceJSON.close()
+
+    # Determine state
+    State = "no-debayer" if __NoDebayer__ else "debayer"
+
+    # Set apropriate state
+    if json_data['preview']:
+        if 'no-debayer' in json_data['preview']:
+            json_data['preview'] = State
+    else:
+        json_data['preview'] = State
+
+    # Write validated JSON file
+    with open(JSONFile, 'w') as outfile:
+        json.dump(json_data, outfile, sort_keys = True, indent = 4)
+
+# Program entry point function
+# pylint: disable=W0603
+def main(argv):
+
+    # Compute JSON file path
+    __JSONFile__ = "%s/info/rawdata-autoseg/segment.json" % (argv[0])
+    __NoDebayer__ = (int( argv[ 1 ] ) == 1)
+
+    # Tag corrupted images in json
+    updateJSON( __JSONFile__, __NoDebayer__)
+
+# Program entry point
+if __name__ == "__main__":
+    main(sys.argv[1:])
