@@ -104,7 +104,7 @@ if [ -z "$PARAM_SEGMENT" ]; then
         SEGMENT_FOLDER=$SEGMENTS_DIR/$SEGMENT_TIMESTAMP
 
         # Check if segment is already splitted
-        python $STATE_SCRIPT $SEGMENT_FOLDER
+        python $STATE_SCRIPT $SEGMENT_FOLDER $PARAM_NO_DEBAYER
 
         if [ $? -eq 1 ]; then
             echo "Previews already generated for segment $SEGMENT_TIMESTAMP, skipping"
@@ -142,7 +142,7 @@ else
     SEGMENT_FOLDER=$SEGMENTS_DIR/$PARAM_SEGMENT
 
     # Check if previews has been already generated for segment
-    python $STATE_SCRIPT $SEGMENT_FOLDER
+    python $STATE_SCRIPT $SEGMENT_FOLDER $PARAM_NO_DEBAYER
 
     if [ $? -eq 1 ]; then
         echo "Previews already generated for segment $PARAM_SEGMENT, skipping"
