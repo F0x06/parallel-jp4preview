@@ -43,20 +43,48 @@
 import sys
 import os
 
+# Usage display function
+def _usage():
+    print """
+    Usage: %s <Mount point> <Camera MAC> <Master timestamp> <Segment timestamp> <No debayer ? *0|1>
+    """ % os.path.basename( sys.argv[ 0 ] )
+
 # Program entry point function
 # pylint: disable=W0603
 def main(argv):
 
+    # Check arguments
+    if( len( argv ) < 5 ):
+        _usage()
+        sys.exit( 0 )
+
+    # Arguments variables
+    __MountPoint__       = argv[ 0 ]
+    __CameraMAC__        = argv[ 1 ]
+    __MasterTimestamp__  = argv[ 2 ]
+    __SegmentTimestamp__ = argv[ 3 ]
+    __Param_NoDebayer__ = "0"
+
+    if( len( argv ) > 4 ):
+        __Param_NoDebayer__ = argv[ 4 ]
+
     # Compute JSON file path
-    __Segment_Folder__ = argv[ 0 ]
-    __NoDebayer__ = (int( argv[ 1 ] ) == 1)
+    __Segment_Folder__ = "%s/camera/%s/raw/%s/segment/%s" % (__MountPoint__, __CameraMAC__, __MasterTimestamp__, __SegmentTimestamp__)
+    __NoDebayer__ = (int( __Param_NoDebayer__ ) == 1)
 
     # Compute source folder
-    PreviewsFolder = "%s/preview/%s" % (__Segment_Folder__, ('no-debayer' if __NoDebayer__ else 'debayer'))
+    PreviewsFolder = "%s/preview/%s/img" % (__Segment_Folder__, ('no-debayer' if __NoDebayer__ else 'debayer'))
+
+    # Compute destination folder
+    VideoFolder = "%s/preview/%s/vid" % (__Segment_Folder__, ('no-debayer' if __NoDebayer__ else 'debayer'))
+
+    # Create output folder if not present
+    if not os.path.isdir(VideoFolder):
+        os.makedirs(VideoFolder)
 
     # Create preview movie if not exists
     if not os.path.isfile("%s/segment.webm" % PreviewsFolder):
-        os.system('mencoder mf://%s/*/*.jpeg -mf w=1944:h=972:fps=25:type=jpeg -ovc lavc -of lavf -lavfopts format=webm -lavcopts vcodec=libvpx:mbd=2:trell -ffourcc VP80 -oac copy -o %s/segment.webm > /dev/null 2>&1' % (PreviewsFolder, PreviewsFolder))
+        os.system('mencoder mf://%s/*/*.jpeg -mf w=1944:h=972:fps=25:type=jpeg -ovc lavc -of lavf -lavfopts format=webm -lavcopts vcodec=libvpx:mbd=2:trell -ffourcc VP80 -oac copy -o %s/25fps.webm > /dev/null 2>&1' % (PreviewsFolder, VideoFolder))
 
 # Program entry point
 if __name__ == "__main__":

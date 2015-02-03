@@ -367,13 +367,13 @@ def main(argv):
         DebayFolder = "no-debayer"
 
     # Determine base segment folder
-    BaseSegmentsFolder = "%s/camera/%s/raw/segment/%s" % (__PARAM_MOUNT__, __PARAM_MAC__, __PARAM_MASTER__)
+    BaseSegmentsFolder = "%s/camera/%s/raw/%s/segment" % (__PARAM_MOUNT__, __PARAM_MAC__, __PARAM_MASTER__)
 
     # Compute input jp4 path
     __Input__    = "%s/%s/jp4" % (BaseSegmentsFolder, __PARAM_SEGMENT__)
 
     # Compute output folder
-    __Output_Base__   = "%s/%s/preview/%s" % (BaseSegmentsFolder, __PARAM_SEGMENT__, DebayFolder)
+    __Output_Base__   = "%s/%s/preview/%s/img" % (BaseSegmentsFolder, __PARAM_SEGMENT__, DebayFolder)
 
     # Compute output folders
     __Output__   = "%s/%d" % (__Output_Base__, __JP4_Image__.base_folder)

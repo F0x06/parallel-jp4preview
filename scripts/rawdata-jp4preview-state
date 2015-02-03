@@ -42,6 +42,7 @@
 # Imports
 import json
 import sys
+import os
 
 # Function to check if a segment is already extracted
 def SegmentFinished(JSONFile, NoDebayer):
@@ -66,13 +67,34 @@ def SegmentFinished(JSONFile, NoDebayer):
     else:
         return False
 
+# Usage display function
+def _usage():
+    print """
+    Usage: %s <Mount point> <Camera MAC> <Master timestamp> <Segment timestamp> <No debayer ? *0|1>
+    """ % os.path.basename( sys.argv[ 0 ] )
+
 # Program entry point function
 # pylint: disable=W0603
 def main(argv):
 
+    # Check arguments
+    if( len( argv ) < 5 ):
+        _usage()
+        sys.exit( 0 )
+
+    # Arguments variables
+    __MountPoint__       = argv[ 0 ]
+    __CameraMAC__        = argv[ 1 ]
+    __MasterTimestamp__  = argv[ 2 ]
+    __SegmentTimestamp__ = argv[ 3 ]
+    __Param_NoDebayer__ = "0"
+
+    if( len( argv ) > 4 ):
+        __Param_NoDebayer__ = argv[ 4 ]
+
     # Compute JSON file path
-    __JSONFile__  = "%s/info/rawdata-autoseg/segment.json" % (argv[ 0 ])
-    __NoDebayer__ = (int( argv[ 1 ] ) == 1)
+    __JSONFile__ = "%s/camera/%s/raw/%s/segment/%s/info/segment.json" % (__MountPoint__, __CameraMAC__, __MasterTimestamp__, __SegmentTimestamp__)
+    __NoDebayer__ = (int( __Param_NoDebayer__ ) == 1)
 
     # Return status
     State = SegmentFinished( __JSONFile__, __NoDebayer__)
