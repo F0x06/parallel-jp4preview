@@ -43,6 +43,25 @@ PARAM_SEGMENT=""
 PARAM_DISK_THREADS=""
 PARAM_NO_DEBAYER="0"
 
+# Help function #
+_help() {
+    echo """
+    Usage: $(basename $0) [OPTIONS]
+
+    [Required arguments]
+    --mount-point       Base mount directory
+    --mac-address       Camera MAC address
+    --master-timestamp  Master timestamp
+
+    [Optional arguments]
+    --segment-timestamp Segment timestamp
+    --no-split          Exit program
+    --no-debayer        Write grayscale images (without debayer)
+    --disk-threads      Process localy with specified number of threads
+    --help              Show this message
+    """
+}
+
 # Arguments and parameters parser #
 arguments() {
 
@@ -56,7 +75,7 @@ arguments() {
                 PARAM_NO_DEBAYER="1"
             ;;
             --no-split)
-                echo --no-split given exiting...
+                echo "--no-split given exiting..."
                 exit
             ;;
             --mount-point)
@@ -83,11 +102,21 @@ arguments() {
                 fi
                 shift
             ;;
+            --help | -h)
+                _help
+                exit
+            ;;
         esac
 
     done
 
 }
+
+# Display help if needed #
+if [ $# -eq 0 ]; then
+    _help
+    exit
+fi
 
 # Argument and parameters #
 arguments $@
